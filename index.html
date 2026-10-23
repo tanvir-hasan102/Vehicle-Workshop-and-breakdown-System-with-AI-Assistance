@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadRescue — AI Emergency Vehicle Assistance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: "Segoe UI", system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.35); }
+    .card-hover { transition: all 0.2s; }
+    pre { white-space: pre-wrap; word-wrap: break-word; font-family: inherit; line-height: 1.7; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- NAV -->
+  <nav class="bg-gray-800 border-b border-gray-700 px-6 py-3 sticky top-0 z-50 shadow-xl">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="#" onclick="showSection('home')" class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-xl">🚗</div>
+        <div>
+          <div class="text-lg font-bold leading-tight"><span class="text-orange-400">Road</span><span class="text-white">Rescue</span></div>
+          <div class="text-xs text-gray-400">AI Emergency Vehicle Assistance</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-4 md:gap-6 text-sm">
+        <a href="#" onclick="showSection('home')" class="text-gray-300 hover:text-orange-400 transition-colors">🏠 Home</a>
+        <a href="#" onclick="showSection('ai')" class="text-gray-300 hover:text-orange-400 transition-colors">🤖 AI</a>
+        <a href="#" onclick="showSection('mechanics')" class="text-gray-300 hover:text-orange-400 transition-colors">🔍 Mechanics</a>
+        <a href="#" onclick="showSection('auth')" id="navAuth" class="text-gray-300 hover:text-orange-400 transition-colors">👤 Login</a>
+        <a href="#" onclick="showSection('dashboard')" id="navDash" class="hidden bg-orange-600 hover:bg-orange-700 px-3 py-1.5 rounded-lg font-medium transition-colors">📊 Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
+    
+    <!-- 🏠 HOME -->
+    <section id="home" class="fade-in">
+      <div class="text-center py-12">
+        <div class="text-6xl mb-4">🚗💥🔧</div>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Stranded on the Road?<br><span class="text-orange-400">We've Got You Covered!</span></h1>
+        <p class="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">AI-powered emergency vehicle assistance anywhere in Bangladesh. Describe your problem, upload a photo, find the nearest mechanic — instantly.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button onclick="showSection('ai')" class="bg-orange-600 hover:bg-orange-700 px-8 py-4 rounded-xl text-lg font-bold transition-all transform hover:scale-105 shadow-lg shadow-orange-900/40">🤖 Get AI Help — Free!</button>
+          <button onclick="showSection('mechanics')" class="bg-gray-700 hover:bg-gray-600 border border-gray-600 px-8 py-4 rounded-xl text-lg font-bold transition-all">🔍 Find Nearest Mechanic</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+        <div onclick="showSection('ai')" class="bg-gray-800 border border-gray-700 hover:border-orange-500 rounded-xl p-6 text-center group transition-all card-hover cursor-pointer">
+          <div class="text-4xl mb-3">🤖</div><h3 class="text-lg font-bold text-orange-400 mb-2">AI Diagnosis</h3><p class="text-gray-400 text-sm">Describe your problem or upload a photo for instant AI-powered damage detection.</p>
+        </div>
+        <div onclick="showSection('mechanics')" class="bg-gray-800 border border-gray-700 hover:border-blue-500 rounded-xl p-6 text-center group transition-all card-hover cursor-pointer">
+          <div class="text-4xl mb-3">📍</div><h3 class="text-lg font-bold text-blue-400 mb-2">Find Mechanic</h3><p class="text-gray-400 text-sm">Search 38+ certified mechanics nationwide — even 300 km+ from the workshop.</p>
+        </div>
+        <div onclick="showSection('auth')" class="bg-gray-800 border border-gray-700 hover:border-green-500 rounded-xl p-6 text-center group transition-all card-hover cursor-pointer">
+          <div class="text-4xl mb-3">🛠️</div><h3 class="text-lg font-bold text-green-400 mb-2">Request Service</h3><p class="text-gray-400 text-sm">Order parts & a mechanic to your location. Pay via bKash, Nagad, or Card.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <div class="text-center"><div class="text-3xl font-bold text-orange-400">38+</div><div class="text-gray-400 text-sm mt-1">Nationwide Mechanics</div></div>
+        <div class="text-center"><div class="text-3xl font-bold text-blue-400">10+</div><div class="text-gray-400 text-sm mt-1">Cities Covered</div></div>
+        <div class="text-center"><div class="text-3xl font-bold text-green-400">24/7</div><div class="text-gray-400 text-sm mt-1">Emergency Support</div></div>
+        <div class="text-center"><div class="text-3xl font-bold text-purple-400">5</div><div class="text-gray-400 text-sm mt-1">Payment Methods</div></div>
+      </div>
+    </section>
+
+    <!-- 🤖 AI ASSISTANT -->
+    <section id="ai" class="hidden fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-2xl">🤖</div>
+        <div><h2 class="text-2xl font-bold">AI Vehicle Assistant</h2><p class="text-gray-400 text-sm">Describe your problem or upload a photo</p></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <h3 class="font-bold text-orange-400 mb-3">💬 Describe Your Problem</h3>
+            <textarea id="aiProblem" rows="4" placeholder="e.g., Engine suddenly stopped, smoke from under hood..." class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm resize-none focus:border-orange-500 focus:outline-none placeholder-gray-600"></textarea>
+            <input id="aiVehicle" placeholder="Your Vehicle (e.g., Toyota Corolla 2018)" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm mt-2 focus:border-orange-500 focus:outline-none placeholder-gray-600">
+            <button onclick="diagnoseIssue()" id="diagBtn" class="w-full mt-3 bg-orange-600 hover:bg-orange-700 py-3 rounded-lg font-bold text-sm transition-colors">🤖 Get AI Diagnosis</button>
+          </div>
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <h3 class="font-bold text-blue-400 mb-3">📷 Upload Photo for Damage Detection</h3>
+            <div id="dropZone" onclick="document.getElementById('imageInput').click()" class="border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg p-6 text-center cursor-pointer transition-colors">
+              <div class="text-3xl mb-2">📷</div><p class="text-gray-400 text-sm">Click or drag & drop a vehicle photo</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="previewImage(this)">
+            <div id="imgPrev" class="hidden mt-3 space-y-2">
+              <img id="previewImg" class="w-full h-44 object-cover rounded-lg border border-gray-700">
+              <button onclick="analyzeImage()" id="analyzeBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-lg font-bold text-sm transition-colors">🔍 Analyze Damage with AI</button>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-800 border border-gray-700 rounded-xl flex flex-col min-h-[440px]">
+          <div class="flex items-center gap-3 p-4 border-b border-gray-700">
+            <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-sm">🤖</div>
+            <div class="flex-1"><span class="font-bold text-sm">RoadRescue AI</span><span id="aiBadge" class="ml-2 text-xs bg-gray-700 px-2 py-0.5 rounded-full text-gray-400">Fallback AI</span></div>
+            <div id="spinner" class="hidden w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full spin"></div>
+          </div>
+          <div id="chatBox" class="p-4 space-y-3 overflow-y-auto flex-1 max-h-[550px]">
+            <div class="bg-gray-700/60 rounded-lg p-3 text-sm text-gray-300 fade-in">👋 <strong>Hello! I'm your AI assistant.</strong><br>I can diagnose issues, detect damage from photos, and find nearby mechanics.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🔍 MECHANICS -->
+    <section id="mechanics" class="hidden fade-in">
+      <h2 class="text-3xl font-bold mb-1">🔍 Nationwide Mechanic Network</h2>
+      <p class="text-gray-400 mb-8">Search our network of 38+ certified mechanics across Bangladesh</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="space-y-4">
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <h3 class="font-bold text-green-400 mb-4">📍 Search by Location</h3>
+            <input id="mLat" type="number" step="0.0001" placeholder="Latitude" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm mb-2 focus:border-green-500 focus:outline-none placeholder-gray-600">
+            <input id="mLon" type="number" step="0.0001" placeholder="Longitude" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm mb-2 focus:border-green-500 focus:outline-none placeholder-gray-600">
+            <select id="mRadius" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm mb-3 focus:outline-none">
+              <option value="25">Within 25 km</option><option value="50" selected>Within 50 km</option><option value="100">Within 100 km</option><option value="500">Nationwide</option>
+            </select>
+            <button onclick="findMechanics()" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded-lg font-bold text-sm mb-2 transition-colors">🔍 Search</button>
+            <button onclick="useGPSSearch()" class="w-full bg-gray-700 hover:bg-gray-600 py-2.5 rounded-lg text-sm transition-colors">📡 Use GPS</button>
+          </div>
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <h3 class="font-bold text-purple-400 mb-3">🚨 Emergency Auto-Invite</h3>
+            <input id="mIssue" placeholder="Describe your issue" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm mb-3 focus:border-purple-500 focus:outline-none placeholder-gray-600">
+            <button onclick="autoInvite()" class="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-lg font-bold text-sm transition-colors">📨 Auto-Invite Nearest</button>
+          </div>
+          <div id="inviteBox" class="hidden bg-gray-800 border border-green-700 rounded-xl p-5"><div id="inviteContent"></div></div>
+        </div>
+        <div class="md:col-span-2">
+          <div id="mCount" class="text-gray-400 text-sm mb-4"></div>
+          <div id="mResults" class="bg-gray-800 border border-gray-700 rounded-xl p-10 text-center text-gray-500">
+            <div class="text-5xl mb-4">🗺️</div><p class="font-medium">Enter coordinates & click Search</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 👤 AUTH -->
+    <section id="auth" class="hidden fade-in">
+      <div class="max-w-md mx-auto">
+        <div class="text-center mb-8"><div class="text-5xl mb-3">👤</div><h2 class="text-3xl font-bold">Customer Portal</h2></div>
+        <div id="authFlash" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+        <div class="flex mb-5 bg-gray-800 rounded-lg p-1">
+          <button id="tabL" onclick="toggleAuthTab('login')" class="flex-1 py-2 rounded-md text-sm font-medium bg-orange-600 text-white transition-colors">Login</button>
+          <button id="tabR" onclick="toggleAuthTab('register')" class="flex-1 py-2 rounded-md text-sm font-medium text-gray-400 hover:text-white transition-colors">Register</button>
+        </div>
+        <form id="loginForm" method="POST" action="/customer/login" class="bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-3">
+          <input name="phone" type="tel" placeholder="📱 Phone Number" required class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:border-orange-500 focus:outline-none placeholder-gray-600">
+          <input name="password" type="password" placeholder="🔒 Password" required class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:border-orange-500 focus:outline-none placeholder-gray-600">
+          <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 py-3 rounded-lg font-bold transition-colors">🔓 Login</button>
+        </form>
+        <form id="registerForm" method="POST" action="/customer/register" class="hidden bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-3">
+          <input name="name" placeholder="👤 Full Name" required class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:border-green-500 focus:outline-none placeholder-gray-600">
+          <input name="phone" type="tel" placeholder="📱 Phone Number" required class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:border-green-500 focus:outline-none placeholder-gray-600">
+          <input name="password" type="password" placeholder="🔒 Create Password" required class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:border-green-500 focus:outline-none placeholder-gray-600">
+          <div class="border-t border-gray-700 pt-3"><p class="text-gray-500 text-xs mb-2">Vehicle (optional):</p>
+            <div class="grid grid-cols-2 gap-2"><input name="v_brand" placeholder="Brand" class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:outline-none placeholder-gray-600"><input name="v_model" placeholder="Model" class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:outline-none placeholder-gray-600"></div>
+          </div>
+          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded-lg font-bold transition-colors">✅ Create Account</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 📊 DASHBOARD -->
+    <section id="dashboard" class="hidden fade-in">
+      <div class="flex items-center justify-between mb-8">
+        <div><h2 id="dashName" class="text-2xl font-bold">Welcome! 👋</h2><p id="dashPhone" class="text-gray-400 text-sm mt-1">📱 Loading...</p></div>
+        <button onclick="logout()" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors">🚪 Logout</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div onclick="showSection('service')" class="bg-orange-600 hover:bg-orange-700 rounded-xl p-5 text-center transition-all card-hover cursor-pointer"><div class="text-3xl mb-2">🛠️</div><div class="font-bold">Request Service</div></div>
+        <div onclick="showSection('ai')" class="bg-blue-700 hover:bg-blue-600 rounded-xl p-5 text-center transition-all card-hover cursor-pointer"><div class="text-3xl mb-2">🤖</div><div class="font-bold">AI Diagnosis</div></div>
+        <div onclick="showSection('mechanics')" class="bg-green-700 hover:bg-green-600 rounded-xl p-5 text-center transition-all card-hover cursor-pointer"><div class="text-3xl mb-2">🔍</div><div class="font-bold">Find Mechanic</div></div>
+      </div>
+      <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 mb-6">
+        <h3 class="font-bold text-lg mb-4">📋 My Service Requests</h3>
+        <div id="myRequests" class="space-y-3"><p class="text-gray-500 text-center py-6">No requests yet.</p></div>
+      </div>
+    </section>
+
+    <!-- 🛠️ SERVICE REQUEST -->
+    <section id="service" class="hidden fade-in">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold mb-1">🛠️ Request Service</h2>
+        <p id="srvVehInfo" class="text-gray-400 text-sm mb-6">Vehicle: Not registered</p>
+        <form id="srvForm" method="POST" action="/service/request" class="space-y-5">
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <label class="block text-orange-400 font-bold mb-2">💬 Describe the Issue</label>
+            <textarea name="issue" rows="3" required placeholder="e.g., Engine won't start, tire puncture..." class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm resize-none focus:border-orange-500 focus:outline-none placeholder-gray-600"></textarea>
+            <button type="button" onclick="getAISuggestions()" class="mt-2 text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-lg transition-colors">🤖 Get AI Suggestions</button>
+            <div id="aiSug" class="hidden mt-3 bg-gray-900 border border-gray-600 rounded-lg p-3 text-xs text-gray-300"></div>
+          </div>
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <label class="block text-orange-400 font-bold mb-3">🔩 Select Part</label>
+            <div id="partsList" class="space-y-2 max-h-56 overflow-y-auto"><p class="text-gray-500 text-sm">Loading parts...</p></div>
+          </div>
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <label class="block text-orange-400 font-bold mb-3">🔧 Select Mechanic</label>
+            <div id="mechList" class="space-y-2 max-h-56 overflow-y-auto"><p class="text-gray-500 text-sm">Loading mechanics...</p></div>
+          </div>
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <label class="block text-orange-400 font-bold mb-3">📍 Roadside Help?</label>
+            <div class="flex gap-4"><label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="roadside" value="1" onchange="toggleLoc(true)" class="accent-orange-500"> Yes (+Tk 100)</label><label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="roadside" value="0" onchange="toggleLoc(false)" checked class="accent-orange-500"> No</label></div>
+            <div id="locDiv" class="hidden mt-4"><select name="loc_idx" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-sm focus:outline-none"><option value="-1">Workshop Pickup Only</option></select></div>
+          </div>
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <label class="block text-orange-400 font-bold mb-3">💳 Payment Method</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="payment" value="bKash" required class="accent-green-500"><span class="text-sm">💚 bKash</span></label>
+              <label class="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="payment" value="Nagad" class="accent-orange-500"><span class="text-sm">🟠 Nagad</span></label>
+              <label class="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="payment" value="Debit Card" class="accent-blue-500"><span class="text-sm">💳 Debit Card</span></label>
+              <label class="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="payment" value="Credit Card" class="accent-purple-500"><span class="text-sm">💳 Credit Card</span></label>
+            </div>
+          </div>
+          <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.01] shadow-lg">✅ Confirm Service Request</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-gray-800 border-t border-gray-700 py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <div class="text-3xl mb-2">🚗</div><p class="text-orange-400 font-bold text-lg">RoadRescue v2.0 AI-Enhanced</p>
+      <p class="text-gray-400 text-sm mt-1">Group 8 — Tanvir-2485 | Hafiz-2450 | Shahajalal-2451</p>
+      <div class="flex flex-wrap justify-center gap-4 mt-4 text-xs text-gray-500"><span>🤖 Google Gemini AI</span>•<span>🔧 38+ Mechanics</span>•<span>💳 bKash/Nagad/Card</span></div>
+    </div>
+  </footer>
+
+  <script>
+    // ── NAVIGATION ──
+    function showSection(id) {
+      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      if(id === 'dashboard') loadDashboard();
+      if(id === 'service') loadServiceForm();
+      window.scrollTo(0,0);
+    }
+
+    // ── AI FUNCTIONS ──
+    function addMsg(html, isUser=false) {
+      const box = document.getElementById('chatBox');
+      const d = document.createElement('div');
+      d.className = `p-3 rounded-lg text-sm fade-in ${isUser ? 'bg-gray-700/60 border border-gray-600 ml-4' : 'bg-orange-900/20 border border-orange-800/40'}`;
+      d.innerHTML = html; box.appendChild(d); box.scrollTop = box.scrollHeight;
+    }
+    function setLoad(on) { document.getElementById('spinner').classList.toggle('hidden', !on); }
+
+    function diagnoseIssue() {
+      const prob = document.getElementById('aiProblem').value.trim();
+      const veh = document.getElementById('aiVehicle').value.trim();
+      if (!prob) return alert('Please describe your problem first!');
+      addMsg('🧑 <em>' + prob.replace(/</g,'&lt;') + '</em>', true);
+      setLoad(true);
+      fetch('/api/diagnose', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({problem:prob, vehicle:veh}) })
+      .then(r=>r.json()).then(data => {
+        setLoad(false); document.getElementById('aiBadge').textContent = data.source_label || '🤖 AI';
+        addMsg('<strong>🔍 AI Analysis:</strong><br><pre style="margin-top:6px">' + (data.response||'No response').replace(/</g,'&lt;') + '</pre>');
+      }).catch(()=>{ setLoad(false); addMsg('❌ Connection error.'); });
+    }
+
+    function previewImage(inp) {
+      if(inp.files?.[0]) {
+        const r = new FileReader();
+        r.onload = e => { document.getElementById('previewImg').src = e.target.result; document.getElementById('imgPrev').classList.remove('hidden'); };
+        r.readAsDataURL(inp.files[0]);
+      }
+    }
+
+    function analyzeImage() {
+      const f = document.getElementById('imageInput').files[0];
+      if(!f) return alert('Select an image first!');
+      addMsg('📷 <em>Uploading & analyzing...</em>', true); setLoad(true);
+      const fd = new FormData(); fd.append('image', f);
+      fetch('/api/analyze-image', {method:'POST', body:fd})
+      .then(r=>r.json()).then(data => {
+        setLoad(false); document.getElementById('aiBadge').textContent = data.source_label || '🔍 Vision';
+        addMsg('<strong>📷 Damage Analysis:</strong><br><pre style="margin-top:6px">' + (data.analysis||'No analysis').replace(/</g,'&lt;') + '</pre>');
+      }).catch(()=>{ setLoad(false); addMsg('❌ Analysis failed.'); });
+    }
+
+    function getAISuggestions() {
+      const issue = document.querySelector('[name=issue]').value.trim();
+      if(!issue) return alert('Describe issue first!');
+      const d = document.getElementById('aiSug'); d.classList.remove('hidden'); d.textContent = '🤖 Analyzing...';
+      fetch('/api/diagnose', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({problem: issue})})
+      .then(r=>r.json()).then(data => {
+        d.innerHTML = '<strong class="text-orange-400">AI Suggestions:</strong><pre style="margin-top:4px;font-size:11px">' + (data.response||'').replace(/</g,'&lt;') + '</pre>';
+      }).catch(()=> d.textContent = '❌ Failed.');
+    }
+
+    // ── MECHANICS FUNCTIONS ──
+    function findMechanics() {
+      const lat=parseFloat(document.getElementById('mLat').value), lon=parseFloat(document.getElementById('mLon').value), r=parseInt(document.getElementById('mRadius').value);
+      if(isNaN(lat)||isNaN(lon)) return alert('Enter valid coordinates!');
+      document.getElementById('mResults').innerHTML='<div class="text-center py-12 text-gray-400"><div class="text-4xl spin inline-block mb-3">⚙️</div>Searching...</div>';
+      fetch('/api/find-mechanics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat,lon,radius:r})})
+      .then(r=>r.json()).then(data=>{
+        const ms=data.mechanics||[]; document.getElementById('mCount').textContent=`${ms.length} mechanic(s) within ${r} km`;
+        if(!ms.length) { document.getElementById('mResults').innerHTML='<div class="bg-gray-800 border border-yellow-700 rounded-xl p-8 text-center"><p class="text-yellow-400 font-bold">None found</p><p class="text-gray-400 text-sm mt-2">Try larger radius or Auto-Invite</p></div>'; return; }
+        document.getElementById('mResults').innerHTML = ms.slice(0,6).map(m=>`<div class="bg-gray-800 border border-gray-700 rounded-xl p-5 flex gap-4 card-hover fade-in mb-3"><div class="w-12 h-12 bg-gradient-to-br from-orange-600 to-red-700 rounded-full flex items-center justify-center text-xl flex-shrink-0">🔧</div><div class="flex-1"><div class="font-bold">${m.name}</div><div class="text-orange-400 text-sm">${m.expertise}</div><div class="text-gray-400 text-xs mt-1">📍 ${m.city}, ${m.distance_km?.toFixed(1)}km | 💰 Tk${(m.rate_per_job||1500).toLocaleString()}/job</div></div></div>`).join('');
+      });
+    }
+    function useGPSSearch() {
+      if(!navigator.geolocation) return alert('Not supported');
+      navigator.geolocation.getCurrentPosition(p=>{document.getElementById('mLat').value=p.coords.latitude.toFixed(6);document.getElementById('mLon').value=p.coords.longitude.toFixed(6);findMechanics();},e=>alert('GPS: '+e.message));
+    }
+    function autoInvite() {
+      const lat=parseFloat(document.getElementById('mLat').value), lon=parseFloat(document.getElementById('mLon').value), issue=document.getElementById('mIssue').value.trim()||'Breakdown';
+      if(isNaN(lat)||isNaN(lon)) return alert('Enter location first!');
+      document.getElementById('inviteBox').classList.remove('hidden'); document.getElementById('inviteContent').textContent='📨 Inviting...';
+      fetch('/api/auto-invite',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat,lon,issue})})
+      .then(r=>r.json()).then(d=>{
+        if(d.found) document.getElementById('inviteContent').innerHTML=`<h4 class="font-bold text-green-400 mb-2">✅ Sent!</h4><p class="text-sm text-gray-300">${d.message}</p>`;
+        else document.getElementById('inviteContent').innerHTML=`<h4 class="font-bold text-yellow-400 mb-2">⚠️ Not found</h4><p class="text-sm text-gray-300">${d.message}</p>`;
+      });
+    }
+
+    // ── AUTH & DASHBOARD ──
+    function toggleAuthTab(t) {
+      document.getElementById('loginForm').classList.toggle('hidden', t!=='login');
+      document.getElementById('registerForm').classList.toggle('hidden', t!=='register');
+      document.getElementById('tabL').className='flex-1 py-2 rounded-md text-sm font-medium transition-colors '+(t==='login'?'bg-orange-600 text-white':'text-gray-400 hover:text-white');
+      document.getElementById('tabR').className='flex-1 py-2 rounded-md text-sm font-medium transition-colors '+(t==='register'?'bg-green-600 text-white':'text-gray-400 hover:text-white');
+    }
+    async function loadDashboard() {
+      // In a full SPA, we'd fetch /api/profile. Here we simulate session check via a quick fetch
+      try {
+        const res = await fetch('/customer/dashboard');
+        if(res.ok) {
+          document.getElementById('navAuth').classList.add('hidden');
+          document.getElementById('navDash').classList.remove('hidden');
+          document.getElementById('dashName').textContent = 'Welcome! 👋';
+          document.getElementById('myRequests').innerHTML = '<p class="text-center py-6 text-gray-400">Check your browser console or wait for form redirect. (Demo mode)</p>';
+        } else showSection('auth');
+      } catch(e) {}
+    }
+    function logout() { fetch('/customer/logout').then(()=>location.reload()); }
+
+    // ── SERVICE FORM ──
+    function toggleLoc(show) { document.getElementById('locDiv').classList.toggle('hidden', !show); }
+    function loadServiceForm() {
+      // Fallback parts/mechanics if API not reachable
+      document.getElementById('partsList').innerHTML = '<label class="flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="part_code" value="P001" required class="accent-orange-500"><div class="flex-1 text-sm">Engine Oil 5W-30</div><span class="text-orange-400 text-sm font-bold">Tk 1200</span></label><label class="flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="part_code" value="P002" class="accent-orange-500"><div class="flex-1 text-sm">Brake Pad Set</div><span class="text-orange-400 text-sm font-bold">Tk 1800</span></label>';
+      document.getElementById('mechList').innerHTML = '<label class="flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-lg p-3 cursor-pointer"><input type="radio" name="mech_idx" value="0" required class="accent-orange-500"><div class="flex-1 text-sm">Rahim Uddin <span class="text-xs text-orange-400">Engine Specialist</span></div><span class="text-orange-400 text-sm font-bold">Tk 2000</span></label>';
+    }
+
+    // Init
+    document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); fetch('/customer/login',{method:'POST',body:new FormData(e.target)}).then(()=>{location.reload();}); });
+    document.getElementById('registerForm').addEventListener('submit', e => { e.preventDefault(); fetch('/customer/register',{method:'POST',body:new FormData(e.target)}).then(()=>showSection('auth')); });
+    document.getElementById('srvForm').addEventListener('submit', e => { e.preventDefault(); fetch('/service/request',{method:'POST',body:new FormData(e.target)}).then(r=>r.json()).then(()=>alert('✅ Request confirmed!')).catch(()=>{e.target.submit();}); });
+  </script>
+</body>
+</html>

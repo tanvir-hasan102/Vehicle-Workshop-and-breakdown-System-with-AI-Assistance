@@ -1,0 +1,1641 @@
+"""
+
+import os
+import sys
+import math
+import hashlib
+import csv
+import json
+import base64
+import csv
+import hashlib
+import io
+import json
+import math
+import os
+import sys
+from dataclasses import dataclass, field
+from typing import List, Dict, Tuple, Optional, Any
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+# ── Optional AI / Image imports ───────────────────────────────────────────────
+try:
+    import google.generativeai as genai
+
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+try:
+    from PIL import Image
+
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+    import cv2
+    import numpy as np
+
+    CV2_AVAILABLE = True
+except ImportError:
+    CV2_AVAILABLE = False
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
+
+from flask import (Flask, request, jsonify, render_template_string,
+                   session, redirect, url_for)
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
+
+# ── Constants ─────────────────────────────────────────────────────────────────
+WORKSHOP_LAT  = 23.8103
+WORKSHOP_LON  = 90.4125
+WORKSHOP_LAT = 23.8103
+WORKSHOP_LON = 90.4125
+WORKSHOP_NAME = "RoadRescue Main Workshop — Dhaka"
+VERSION       = "2.0 AI-Enhanced"
+SECRET_KEY    = "roadrescue_hackathon_2024_secret"
+VERSION = "2.0 AI-Enhanced"
+SECRET_KEY = "roadrescue_hackathon_2024_secret"
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+def simple_hash(s: str) -> str:
+    return hashlib.md5(s.encode()).hexdigest()
+
+
+def read_int(prompt: str) -> int:
+    while True:
+        try:
+            print("Invalid input! Please enter a number: ", end="")
+
+
+def read_line(prompt: str) -> str:
+    return input(prompt).strip()
+
+
+def open_file_cross_platform(filename: str):
+    try:
+        if sys.platform.startswith("win"):
+        print(f"  ↳ Open '{filename}' manually.")
+
+
+def _strip_price(raw: str) -> float:
+    """Parse price strings like '1200.00/-' or '1200' → float."""
+    cleaned = raw.strip().replace("/-", "").replace(",", "").strip()
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+@dataclass
+class NamedLocation:
+    area_name: str = ""
+                lat_s, lon_s = coord.split(",", 1)
+                self.locations.append(
+                    NamedLocation(name.strip(), float(lat_s.strip()), float(lon_s.strip()))
+                    NamedLocation(
+                        name.strip(), float(lat_s.strip()), float(lon_s.strip())
+                    )
+                )
+            except ValueError:
+                pass
+            if 1 <= ch <= len(loc_list):
+                lo = loc_list[ch - 1]
+                if lo.lat != 0.0 and lo.lon != 0.0 and Location.is_in_bangladesh(lo.lat, lo.lon):
+                if (
+                    lo.lat != 0.0
+                    and lo.lon != 0.0
+                    and Location.is_in_bangladesh(lo.lat, lo.lon)
+                ):
+                    return Location(lo.lat, lo.lon)
+                print("  Invalid coordinates for that area, try another.")
+            else:
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+@dataclass
+class Vehicle:
+    reg_no:  str = ""
+    brand:   str = ""
+    model:   str = ""
+    colour:  str = ""
+    year:    int = 0
+    reg_no: str = ""
+    brand: str = ""
+    model: str = ""
+    colour: str = ""
+    year: int = 0
+
+    def serialized(self) -> str:
+        return f"{self.reg_no}-{self.brand}-{self.model}-{self.colour}-{self.year}"
+        parts = data.split("-", 4)
+        v = Vehicle()
+        if len(parts) > 0: v.reg_no = parts[0]
+        if len(parts) > 1: v.brand  = parts[1]
+        if len(parts) > 2: v.model  = parts[2]
+        if len(parts) > 3: v.colour = parts[3]
+        if len(parts) > 0:
+            v.reg_no = parts[0]
+        if len(parts) > 1:
+            v.brand = parts[1]
+        if len(parts) > 2:
+            v.model = parts[2]
+        if len(parts) > 3:
+            v.colour = parts[3]
+        if len(parts) > 4:
+            try: v.year = int(parts[4])
+            except ValueError: pass
+            try:
+                v.year = int(parts[4])
+            except ValueError:
+                pass
+        return v
+
+
+        self.has_vehicle = False
+
+    def get_name(self) -> str:  return self.name
+    def get_phone(self) -> str: return self.phone
+    def get_name(self) -> str:
+        return self.name
+
+    def get_phone(self) -> str:
+        return self.phone
+
+    def check_password(self, pw: str) -> bool:
+        return self.password_hash == simple_hash(pw)
+    def add_vehicle(self):
+        self.vehicle = Vehicle(
+            reg_no = read_line("  Registration No.: "),
+            brand  = read_line("  Brand: "),
+            model  = read_line("  Model: "),
+            colour = read_line("  Color: "),
+            year   = read_int ("  Year:  ")
+            reg_no=read_line("  Registration No.: "),
+            brand=read_line("  Brand: "),
+            model=read_line("  Model: "),
+            colour=read_line("  Color: "),
+            year=read_int("  Year:  "),
+        )
+        self.has_vehicle = True
+
+@dataclass
+class Part:
+    code:  str   = ""
+    name:  str   = ""
+    code: str = ""
+    name: str = ""
+    price: float = 0.0
+
+    def display(self):
+    def deserialize(line: str) -> "Part":
+        cols = line.split(";", 2)
+        code  = cols[0] if len(cols) > 0 else ""
+        name  = cols[1] if len(cols) > 1 else ""
+        code = cols[0] if len(cols) > 0 else ""
+        name = cols[1] if len(cols) > 1 else ""
+        price = _strip_price(cols[2]) if len(cols) > 2 else 0.0
+        return Part(code, name, price)
+
+@dataclass
+class Mechanic:
+    code:         str      = ""
+    name:         str      = ""
+    expertise:    str      = ""
+    rate_per_job: float    = 0.0
+    available:    bool     = True
+    location:     Location = field(default_factory=Location)
+    code: str = ""
+    name: str = ""
+    expertise: str = ""
+    rate_per_job: float = 0.0
+    available: bool = True
+    location: Location = field(default_factory=Location)
+
+    def display(self):
+        status = "[Available]" if self.available else "[Busy]"
+        print(f"  {self.name:<20}{self.code:<10}{self.expertise:<30}Tk {self.rate_per_job:.2f}  {status}")
+        print(
+            f"  {self.name:<20}{self.code:<10}{self.expertise:<30}Tk {self.rate_per_job:.2f}  {status}"
+        )
+
+
+class ServiceRequest:
+            return "Not Provided"
+        ws = Location(WORKSHOP_LAT, WORKSHOP_LON)
+        d  = self.location.distance_to(ws)
+        return f"{self.location} | {d:.2f} km from workshop | {self.location.maps_url()}"
+        d = self.location.distance_to(ws)
+        return (
+            f"{self.location} | {d:.2f} km from workshop | {self.location.maps_url()}"
+        )
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+class GeminiAIAssistant:
+    """
+    Wraps Google Gemini 1.5 Flash for:
+
+    def __init__(self):
+        self.api_key  = os.getenv("GEMINI_API_KEY", "")
+        self.model    = None
+        self._ready   = False
+
+        if GEMINI_AVAILABLE and self.api_key and self.api_key not in ("your_key_here", ""):
+        self.api_key = os.getenv("GEMINI_API_KEY", "")
+        self.model = None
+        self._ready = False
+
+        if (
+            GEMINI_AVAILABLE
+            and self.api_key
+            and self.api_key not in ("your_key_here", "")
+        ):
+            try:
+                genai.configure(api_key=self.api_key)
+                self.model  = genai.GenerativeModel("gemini-1.5-flash")
+                self.model = genai.GenerativeModel("gemini-1.5-flash")
+                self._ready = True
+                print("  [AI] ✅ Google Gemini 1.5 Flash — initialized successfully!")
+            except Exception as ex:
+        else:
+            if not GEMINI_AVAILABLE:
+                print("  [AI] ⚠️  google-generativeai not installed. Using keyword fallback.")
+                print(
+                    "  [AI] ⚠️  google-generativeai not installed. Using keyword fallback."
+                )
+            else:
+                print("  [AI] ⚠️  GEMINI_API_KEY not set. Using keyword fallback.")
+                print("  [AI]     Get a FREE key at: https://aistudio.google.com/app/apikey")
+                print(
+                    "  [AI]     Get a FREE key at: https://aistudio.google.com/app/apikey"
+                )
+
+    @property
+    def is_real_ai(self) -> bool:
+    @property
+    def status_label(self) -> str:
+        return "🤖 Google Gemini 1.5 Flash" if self._ready else "🔧 Keyword AI (Fallback)"
+        return (
+            "🤖 Google Gemini 1.5 Flash" if self._ready else "🔧 Keyword AI (Fallback)"
+        )
+
+    @property
+    def badge(self) -> str:
+                resp = self.model.generate_content(prompt)
+                return {
+                    "success":      True,
+                    "response":     resp.text,
+                    "source":       "gemini",
+                    "success": True,
+                    "response": resp.text,
+                    "source": "gemini",
+                    "source_label": "🤖 Google Gemini AI",
+                }
+            except Exception as ex:
+        tips = self._keyword_tips(problem)
+        return {
+            "success":      True,
+            "response":     self._format_fallback(problem, tips),
+            "source":       "fallback",
+            "success": True,
+            "response": self._format_fallback(problem, tips),
+            "source": "fallback",
+            "source_label": "🔧 Keyword AI (Fallback)",
+        }
+
+    # ── Image Analysis ──────────────────────────────────────────────────────
+
+    def analyze_vehicle_image(self, image_bytes: bytes,
+                               mime_type: str = "image/jpeg") -> Dict[str, Any]:
+    def analyze_vehicle_image(
+        self, image_bytes: bytes, mime_type: str = "image/jpeg"
+    ) -> Dict[str, Any]:
+        if self.model:
+            try:
+                prompt = (
+                resp = self.model.generate_content([prompt, image_part])
+                return {
+                    "success":      True,
+                    "analysis":     resp.text,
+                    "source":       "gemini-vision",
+                    "success": True,
+                    "analysis": resp.text,
+                    "source": "gemini-vision",
+                    "source_label": "🤖 Gemini Vision AI",
+                }
+            except Exception:
+        if not (CV2_AVAILABLE and PIL_AVAILABLE):
+            return {
+                "success":      True,
+                "analysis":     (
+                "success": True,
+                "analysis": (
+                    "📷 IMAGE ANALYSIS (Basic Mode)\n\n"
+                    "OpenCV/Pillow not fully installed.\n"
+                    "Please install: pip install pillow opencv-python-headless\n\n"
+                    "Get a free key at: https://aistudio.google.com/app/apikey"
+                ),
+                "source":       "no-cv",
+                "source": "no-cv",
+                "source_label": "⚠️ Basic Mode",
+            }
+        try:
+            img    = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+            arr    = np.array(img)
+            gray   = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
+            edges  = cv2.Canny(gray, 100, 200)
+            ed     = float(np.sum(edges > 0)) / edges.size
+            hsv    = cv2.cvtColor(arr, cv2.COLOR_RGB2HSV)
+            rust   = cv2.inRange(hsv, np.array([0,50,50]), np.array([20,255,255]))
+            rd     = float(np.sum(rust > 0)) / rust.size
+            img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+            arr = np.array(img)
+            gray = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
+            edges = cv2.Canny(gray, 100, 200)
+            ed = float(np.sum(edges > 0)) / edges.size
+            hsv = cv2.cvtColor(arr, cv2.COLOR_RGB2HSV)
+            rust = cv2.inRange(hsv, np.array([0, 50, 50]), np.array([20, 255, 255]))
+            rd = float(np.sum(rust > 0)) / rust.size
+
+            findings = []
+            if ed > 0.15:
+                findings.append("⚠️ High structural complexity / possible deformation detected")
+                findings.append(
+                    "⚠️ High structural complexity / possible deformation detected"
+                )
+            if ed > 0.25:
+                findings.append("🔴 Significant edge disruption — major body damage likely")
+                findings.append(
+                    "🔴 Significant edge disruption — major body damage likely"
+                )
+            if rd > 0.05:
+                findings.append("🟤 Rust / corrosion coloration detected")
+            if rd > 0.15:
+                findings.append("🔴 Extensive rust — structural integrity may be compromised")
+                findings.append(
+                    "🔴 Extensive rust — structural integrity may be compromised"
+                )
+            if not findings:
+                findings.append("✅ No obvious severe damage patterns detected")
+
+            ]
+            return {
+                "success":      True,
+                "analysis":     "\n".join(lines),
+                "source":       "opencv",
+                "success": True,
+                "analysis": "\n".join(lines),
+                "source": "opencv",
+                "source_label": "🔍 OpenCV Analysis",
+            }
+        except Exception as ex:
+            return {
+                "success":  False,
+                "success": False,
+                "analysis": f"Could not process image: {ex}",
+                "source":   "error",
+                "source": "error",
+                "source_label": "❌ Error",
+            }
+
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+class NationwideMechanicNetwork:
+    """
+    Loads mechanics from nationwide_mechanics.json.
+            print(f"  [Network] ✅ Loaded {len(self.mechanics)} nationwide mechanics.")
+        except FileNotFoundError:
+            print(f"  [Network] ⚠️  {filename} not found — using built-in sample mechanics.")
+            print(
+                f"  [Network] ⚠️  {filename} not found — using built-in sample mechanics."
+            )
+            self.mechanics = self._builtin_sample()
+        except json.JSONDecodeError as ex:
+            print(f"  [Network] ❌ JSON parse error in {filename}: {ex}")
+    def _builtin_sample(self) -> List[Dict]:
+        return [
+            {"id": "BUILT001", "name": "Emergency Mechanic (Dhaka)", "expertise": "General Mechanic",
+             "city": "Dhaka", "area": "Central", "lat": 23.8103, "lon": 90.4125,
+             "contact": "01700-000001", "rating": 4.5, "available": True,
+             "rate_per_job": 2000, "years_experience": 8, "vehicle_types": ["All"]},
+            {"id": "BUILT002", "name": "Highway Mechanic (N1)", "expertise": "Engine Specialist",
+             "city": "Cumilla", "area": "N1 Highway", "lat": 23.4607, "lon": 91.1809,
+             "contact": "01700-000002", "rating": 4.6, "available": True,
+             "rate_per_job": 2200, "years_experience": 10, "vehicle_types": ["Car", "Truck"]},
+            {
+                "id": "BUILT001",
+                "name": "Emergency Mechanic (Dhaka)",
+                "expertise": "General Mechanic",
+                "city": "Dhaka",
+                "area": "Central",
+                "lat": 23.8103,
+                "lon": 90.4125,
+                "contact": "01700-000001",
+                "rating": 4.5,
+                "available": True,
+                "rate_per_job": 2000,
+                "years_experience": 8,
+                "vehicle_types": ["All"],
+            },
+            {
+                "id": "BUILT002",
+                "name": "Highway Mechanic (N1)",
+                "expertise": "Engine Specialist",
+                "city": "Cumilla",
+                "area": "N1 Highway",
+                "lat": 23.4607,
+                "lon": 91.1809,
+                "contact": "01700-000002",
+                "rating": 4.6,
+                "available": True,
+                "rate_per_job": 2200,
+                "years_experience": 10,
+                "vehicle_types": ["Car", "Truck"],
+            },
+        ]
+
+    # ── Search ──────────────────────────────────────────────────────────────
+
+    def find_nearby(self, lat: float, lon: float,
+                    max_km: float = 50.0) -> List[Dict]:
+    def find_nearby(self, lat: float, lon: float, max_km: float = 50.0) -> List[Dict]:
+        user = Location(lat, lon)
+        results = []
+        for m in self.mechanics:
+    # ── Auto-invite (progressive radius) ────────────────────────────────────
+
+    def auto_search_and_invite(self, lat: float, lon: float,
+                               issue: str,
+                               customer_name: str = "Customer") -> Dict[str, Any]:
+    def auto_search_and_invite(
+        self, lat: float, lon: float, issue: str, customer_name: str = "Customer"
+    ) -> Dict[str, Any]:
+        """
+        Progressively expands search radius: 25 → 50 → 100 → 200 → 500 km.
+        Sends invitations to the 3 nearest available mechanics found.
+        """
+        for radius in (25, 50, 100, 200, 500):
+            found     = self.find_nearby(lat, lon, radius)
+            found = self.find_nearby(lat, lon, radius)
+            available = [m for m in found if m.get("available", True)]
+            if not available:
+                continue
+            for m in available[:3]:
+                inv = {
+                    "id":           m["id"],
+                    "name":         m["name"],
+                    "expertise":    m["expertise"],
+                    "city":         m["city"],
+                    "area":         m.get("area", ""),
+                    "distance_km":  m["distance_km"],
+                    "contact":      m["contact"],
+                    "rating":       m.get("rating", 4.0),
+                    "id": m["id"],
+                    "name": m["name"],
+                    "expertise": m["expertise"],
+                    "city": m["city"],
+                    "area": m.get("area", ""),
+                    "distance_km": m["distance_km"],
+                    "contact": m["contact"],
+                    "rating": m.get("rating", 4.0),
+                    "rate_per_job": m.get("rate_per_job", 1500),
+                    "customer_name": customer_name,
+                    "issue":        issue,
+                    "timestamp":    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "status":       "Invitation Sent ✅",
+                    "issue": issue,
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "status": "Invitation Sent ✅",
+                }
+                invited.append(inv)
+                self.invitations.append(inv)
+
+            return {
+                "found":                   True,
+                "search_radius_km":        radius,
+                "found": True,
+                "search_radius_km": radius,
+                "total_mechanics_in_radius": len(found),
+                "mechanics_invited":       len(invited),
+                "invited_mechanics":       invited,
+                "mechanics_invited": len(invited),
+                "invited_mechanics": invited,
+                "message": (
+                    f"Found {len(found)} mechanic(s) within {radius} km. "
+                    f"Invitation sent to {len(invited)} nearest available mechanic(s)!"
+
+        return {
+            "found":                   False,
+            "search_radius_km":        500,
+            "found": False,
+            "search_radius_km": 500,
+            "total_mechanics_in_radius": 0,
+            "mechanics_invited":       0,
+            "invited_mechanics":       [],
+            "mechanics_invited": 0,
+            "invited_mechanics": [],
+            "message": (
+                "No mechanics found nationwide within 500 km. "
+                "Our main workshop team will dispatch immediately. "
+    # ── Invite specific mechanic ─────────────────────────────────────────────
+
+    def invite_specific(self, mechanic_id: str, issue: str,
+                        lat: float, lon: float,
+                        customer_name: str = "Customer") -> Dict[str, Any]:
+    def invite_specific(
+        self,
+        mechanic_id: str,
+        issue: str,
+        lat: float,
+        lon: float,
+        customer_name: str = "Customer",
+    ) -> Dict[str, Any]:
+        for m in self.mechanics:
+            if m.get("id") == mechanic_id:
+                inv = {
+                    "id":           m["id"],
+                    "name":         m["name"],
+                    "expertise":    m["expertise"],
+                    "city":         m["city"],
+                    "contact":      m["contact"],
+                    "id": m["id"],
+                    "name": m["name"],
+                    "expertise": m["expertise"],
+                    "city": m["city"],
+                    "contact": m["contact"],
+                    "customer_name": customer_name,
+                    "issue":        issue,
+                    "lat":          lat,
+                    "lon":          lon,
+                    "timestamp":    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "status":       "Invitation Sent ✅",
+                    "issue": issue,
+                    "lat": lat,
+                    "lon": lon,
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "status": "Invitation Sent ✅",
+                }
+                self.invitations.append(inv)
+                return {"success": True, "message": f"Invitation sent to {m['name']}!", "mechanic": inv}
+                return {
+                    "success": True,
+                    "message": f"Invitation sent to {m['name']}!",
+                    "mechanic": inv,
+                }
+        return {"success": False, "message": "Mechanic not found in network."}
+
+    def get_all(self) -> List[Dict]:
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+class SystemDataManager:
+    def __init__(self):
+        self._parts_by_key: Dict[str, List[Tuple[Part, str]]] = {}
+            if len(cols) < 5:
+                continue
+            key, brand, code, name = cols[0].strip(), cols[1].strip(), cols[2].strip(), cols[3].strip()
+            key, brand, code, name = (
+                cols[0].strip(),
+                cols[1].strip(),
+                cols[2].strip(),
+                cols[3].strip(),
+            )
+            price = _strip_price(cols[4])
+
+            p = Part(code, name, price)
+    '<div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full '
+    'flex items-center justify-center text-xl">🚗</div>'
+    '<div>'
+    "<div>"
+    '<div class="text-lg font-bold leading-tight">'
+    '<span class="text-orange-400">Road</span><span class="text-white">Rescue</span>'
+    '</div>'
+    "</div>"
+    '<div class="text-xs text-gray-400">AI Emergency Vehicle Assistance</div>'
+    '</div>'
+    '</a>'
+    "</div>"
+    "</a>"
+    '<div class="flex items-center gap-5 text-sm">'
+    '<a href="/" class="text-gray-300 hover:text-orange-400 transition-colors">🏠 Home</a>'
+    '<a href="/ai" class="text-gray-300 hover:text-orange-400 transition-colors">🤖 AI Assistant</a>'
+    '<a href="/customer" class="text-gray-300 hover:text-orange-400 transition-colors">👤 Customer</a>'
+    '<a href="/admin" class="bg-orange-600 hover:bg-orange-700 px-3 py-1.5 rounded-lg font-medium transition-colors">🛡️ Admin</a>'
+    '</div>'
+    '</div>'
+    '</nav>'
+    "</div>"
+    "</div>"
+    "</nav>"
+)
+
+_FOOT = (
+    '<p class="text-orange-400 font-bold text-lg">RoadRescue v2.0 AI-Enhanced</p>'
+    '<p class="text-gray-400 text-sm mt-1">'
+    'Group 8 — Tanvir-2485 | Hafiz-2450 | Shahajalal-2451'
+    '</p>'
+    "Group 8 — Tanvir-2485 | Hafiz-2450 | Shahajalal-2451"
+    "</p>"
+    '<p class="text-gray-500 text-xs mt-1">Department of CSE, Northern University Bangladesh</p>'
+    '<div class="flex flex-wrap justify-center gap-4 mt-4 text-xs text-gray-500">'
+    '<span>🤖 Google Gemini AI</span><span>•</span>'
+    '<span>🔧 38+ Nationwide Mechanics</span><span>•</span>'
+    '<span>💳 bKash | Nagad | Card</span><span>•</span>'
+    '<span>📍 GPS Location</span>'
+    '</div>'
+    '</div>'
+    '</footer>'
+    '</body></html>'
+    "<span>🤖 Google Gemini AI</span><span>•</span>"
+    "<span>🔧 38+ Nationwide Mechanics</span><span>•</span>"
+    "<span>💳 bKash | Nagad | Card</span><span>•</span>"
+    "<span>📍 GPS Location</span>"
+    "</div>"
+    "</div>"
+    "</footer>"
+    "</body></html>"
+)
+
+_HEAD = (
+    '<meta charset="UTF-8">'
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+    '<title>{{ page_title }} — RoadRescue</title>'
+    "<title>{{ page_title }} — RoadRescue</title>"
+    '<script src="https://cdn.tailwindcss.com"></script>'
+    '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">'
+    '<style>'
+    "<style>"
+    'body{font-family:"Segoe UI",system-ui,sans-serif}'
+    'pre{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;line-height:1.7}'
+    '.fade-in{animation:fadeIn .4s ease}'
+    '@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}'
+    '.spin{animation:spin 1s linear infinite}'
+    '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'
+    '.card-hover{transition:all .2s}'
+    '.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.35)}'
+    '</style>'
+    '</head>'
+    "pre{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;line-height:1.7}"
+    ".fade-in{animation:fadeIn .4s ease}"
+    "@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}"
+    ".spin{animation:spin 1s linear infinite}"
+    "@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}"
+    ".card-hover{transition:all .2s}"
+    ".card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.35)}"
+    "</style>"
+    "</head>"
+    '<body class="bg-gray-900 text-white min-h-screen flex flex-col">'
+)
+
+
+def _page(content: str) -> str:
+    return _HEAD + _NAV + '<div class="flex-1">' + content + '</div>' + _FOOT
+    return _HEAD + _NAV + '<div class="flex-1">' + content + "</div>" + _FOOT
+
+
+# ── Home ─────────────────────────────────────────────────────────────────────
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+class SystemManager:
+    ADMIN_USER = "Pinkman"
+    ADMIN_HASH = simple_hash("youbettercallsaul")
+        print("=" * 70)
+
+        self.customers:  List[Customer]       = []
+        self.mechanics:  List[Mechanic]       = []
+        self.parts:      List[Part]           = []
+        self.requests:   List[ServiceRequest] = []
+        self.customers: List[Customer] = []
+        self.mechanics: List[Mechanic] = []
+        self.parts: List[Part] = []
+        self.requests: List[ServiceRequest] = []
+        self._next_req_id = 1
+
+        self._data_mgr   = SystemDataManager()
+        self.ai          = GeminiAIAssistant()
+        self.network     = NationwideMechanicNetwork("nationwide_mechanics.json")
+        self._data_mgr = SystemDataManager()
+        self.ai = GeminiAIAssistant()
+        self.network = NationwideMechanicNetwork("nationwide_mechanics.json")
+
+        self._dhaka_db   = DhakaLocationDatabase()
+        self._dhaka_db = DhakaLocationDatabase()
+        self._locations: List[NamedLocation] = []
+
+        self.app = Flask(__name__)
+    def _load_mechanics(self):
+        self.mechanics = [
+            Mechanic("M001", "Rahim Uddin",     "Engine Specialist",              2000.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M002", "Shaon Ahmed",     "Engine Specialist",              1800.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M003", "Ahmed Efty",      "Engine Specialist",              1800.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M004", "Rakib Hasan",     "Engine Specialist (Bike)",       1800.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M005", "Jamal Uddin",     "Engine Specialist (Bike)",       1500.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M006", "Karim Hossain",   "Brake Expert",                   1800.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M007", "Jafor Hossain",   "Brake Expert (Bike)",            1500.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M008", "Sajid Khan",      "Electrical Specialist",          2500.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M009", "Efat Hasan",      "Electrical Specialist",          2200.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M010", "Tamim Islam",     "Electrical Specialist (Bike)",   2200.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M011", "Sabbir Hasan",    "General Mechanic Expert",        1500.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M012", "Rafiq Ullah",     "General Mechanic Expert (Bike)", 1500.0, location=Location(23.8103, 90.4125)),
+            Mechanic("M013", "Ahmed Samir",     "Suspension & Steering Expert",   1800.0, location=Location(23.8103, 90.4125)),
+            Mechanic(
+                "M001",
+                "Rahim Uddin",
+                "Engine Specialist",
+                2000.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M002",
+                "Shaon Ahmed",
+                "Engine Specialist",
+                1800.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M003",
+                "Ahmed Efty",
+                "Engine Specialist",
+                1800.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M004",
+                "Rakib Hasan",
+                "Engine Specialist (Bike)",
+                1800.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M005",
+                "Jamal Uddin",
+                "Engine Specialist (Bike)",
+                1500.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M006",
+                "Karim Hossain",
+                "Brake Expert",
+                1800.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M007",
+                "Jafor Hossain",
+                "Brake Expert (Bike)",
+                1500.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M008",
+                "Sajid Khan",
+                "Electrical Specialist",
+                2500.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M009",
+                "Efat Hasan",
+                "Electrical Specialist",
+                2200.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M010",
+                "Tamim Islam",
+                "Electrical Specialist (Bike)",
+                2200.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M011",
+                "Sabbir Hasan",
+                "General Mechanic Expert",
+                1500.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M012",
+                "Rafiq Ullah",
+                "General Mechanic Expert (Bike)",
+                1500.0,
+                location=Location(23.8103, 90.4125),
+            ),
+            Mechanic(
+                "M013",
+                "Ahmed Samir",
+                "Suspension & Steering Expert",
+                1800.0,
+                location=Location(23.8103, 90.4125),
+            ),
+        ]
+        print(f"  [Workshop] {len(self.mechanics)} mechanic(s) registered.")
+
+        if self._dhaka_db.load("locations.txt"):
+            self._locations = self._dhaka_db.locations
+            print(f"  [Locations] {len(self._locations)} location(s) loaded from locations.txt.")
+            print(
+                f"  [Locations] {len(self._locations)} location(s) loaded from locations.txt."
+            )
+        else:
+            print("  [Locations] locations.txt unavailable — manual coordinates only.")
+
+        @app.route("/ai")
+        def ai_page():
+            return render_template_string(AI_TMPL,
+            return render_template_string(
+                AI_TMPL,
+                page_title="AI Assistant",
+                ai_status=self.ai.status_label,
+                ai_badge=self.ai.badge)
+                ai_badge=self.ai.badge,
+            )
+
+        # ── API: Diagnose ──
+        @app.route("/api/diagnose", methods=["POST"])
+        def api_diagnose():
+            data    = request.get_json(force=True, silent=True) or {}
+            data = request.get_json(force=True, silent=True) or {}
+            problem = data.get("problem", "").strip()
+            vehicle = data.get("vehicle", "").strip()
+            if not problem:
+                return jsonify({"success": False, "response": "Please provide a problem description."}), 400
+                return jsonify(
+                    {
+                        "success": False,
+                        "response": "Please provide a problem description.",
+                    }
+                ), 400
+            result = self.ai.diagnose_problem(problem, vehicle)
+            return jsonify(result)
+
+        def api_analyze_image():
+            if "image" not in request.files:
+                return jsonify({"success": False, "analysis": "No image provided."}), 400
+                return jsonify(
+                    {"success": False, "analysis": "No image provided."}
+                ), 400
+            f = request.files["image"]
+            image_bytes = f.read()
+            mime = f.content_type or "image/jpeg"
+        @app.route("/api/find-mechanics", methods=["POST"])
+        def api_find_mechanics():
+            data   = request.get_json(force=True, silent=True) or {}
+            lat    = float(data.get("lat", 0))
+            lon    = float(data.get("lon", 0))
+            data = request.get_json(force=True, silent=True) or {}
+            lat = float(data.get("lat", 0))
+            lon = float(data.get("lon", 0))
+            radius = float(data.get("radius", 50))
+            found  = self.network.find_nearby(lat, lon, radius)
+            found = self.network.find_nearby(lat, lon, radius)
+            return jsonify({"mechanics": found, "count": len(found)})
+
+        # ── API: Auto-Invite ──
+        @app.route("/api/auto-invite", methods=["POST"])
+        def api_auto_invite():
+            data   = request.get_json(force=True, silent=True) or {}
+            lat    = float(data.get("lat", 0))
+            lon    = float(data.get("lon", 0))
+            issue  = data.get("issue", "Vehicle breakdown")
+            cname  = "Customer"
+            data = request.get_json(force=True, silent=True) or {}
+            lat = float(data.get("lat", 0))
+            lon = float(data.get("lon", 0))
+            issue = data.get("issue", "Vehicle breakdown")
+            cname = "Customer"
+            if "customer_idx" in session:
+                idx = session["customer_idx"]
+                if 0 <= idx < len(self.customers):
+        @app.route("/api/invite-specific", methods=["POST"])
+        def api_invite_specific():
+            data   = request.get_json(force=True, silent=True) or {}
+            mid    = data.get("mechanic_id", "")
+            issue  = data.get("issue", "Vehicle breakdown")
+            lat    = float(data.get("lat", 0))
+            lon    = float(data.get("lon", 0))
+            cname  = "Customer"
+            data = request.get_json(force=True, silent=True) or {}
+            mid = data.get("mechanic_id", "")
+            issue = data.get("issue", "Vehicle breakdown")
+            lat = float(data.get("lat", 0))
+            lon = float(data.get("lon", 0))
+            cname = "Customer"
+            if "customer_idx" in session:
+                idx = session["customer_idx"]
+                if 0 <= idx < len(self.customers):
+            if "customer_idx" in session:
+                return redirect(url_for("customer_dashboard"))
+            return render_template_string(CUSTOMER_ANON_TMPL,
+                page_title="Customer Portal", flash_msg="", success_msg="")
+            return render_template_string(
+                CUSTOMER_ANON_TMPL,
+                page_title="Customer Portal",
+                flash_msg="",
+                success_msg="",
+            )
+
+        @app.route("/customer/register", methods=["POST"])
+        def customer_register():
+            name   = request.form.get("name", "").strip()
+            phone  = request.form.get("phone", "").strip()
+            pw     = request.form.get("password", "").strip()
+            addr   = request.form.get("address", "").strip()
+            name = request.form.get("name", "").strip()
+            phone = request.form.get("phone", "").strip()
+            pw = request.form.get("password", "").strip()
+            addr = request.form.get("address", "").strip()
+            if not name or not phone or not pw:
+                return render_template_string(CUSTOMER_ANON_TMPL,
+                    page_title="Customer Portal", flash_msg="Name, phone and password are required.", success_msg="")
+                return render_template_string(
+                    CUSTOMER_ANON_TMPL,
+                    page_title="Customer Portal",
+                    flash_msg="Name, phone and password are required.",
+                    success_msg="",
+                )
+            for c in self.customers:
+                if c.phone == phone:
+                    return render_template_string(CUSTOMER_ANON_TMPL,
+                        page_title="Customer Portal", flash_msg="Phone already registered. Please login.", success_msg="")
+            cust         = Customer(name, phone, pw)
+            cust.id      = len(self.customers) + 1
+                    return render_template_string(
+                        CUSTOMER_ANON_TMPL,
+                        page_title="Customer Portal",
+                        flash_msg="Phone already registered. Please login.",
+                        success_msg="",
+                    )
+            cust = Customer(name, phone, pw)
+            cust.id = len(self.customers) + 1
+            cust.address = addr
+            # Optional vehicle
+            v_reg = request.form.get("v_reg", "").strip()
+                except ValueError:
+                    v_year = 0
+                cust.vehicle     = Vehicle(v_reg, v_brand, v_model, v_colour, v_year)
+                cust.vehicle = Vehicle(v_reg, v_brand, v_model, v_colour, v_year)
+                cust.has_vehicle = True
+            self.customers.append(cust)
+            return render_template_string(CUSTOMER_ANON_TMPL,
+            return render_template_string(
+                CUSTOMER_ANON_TMPL,
+                page_title="Customer Portal",
+                flash_msg="",
+                success_msg=f"Account created successfully! Welcome, {name}. Please login.")
+                success_msg=f"Account created successfully! Welcome, {name}. Please login.",
+            )
+
+        @app.route("/customer/login", methods=["POST"])
+        def customer_login():
+            phone = request.form.get("phone", "").strip()
+            pw    = request.form.get("password", "").strip()
+            pw = request.form.get("password", "").strip()
+            for i, c in enumerate(self.customers):
+                if c.get_phone() == phone and c.check_password(pw):
+                    session["customer_idx"] = i
+                    return redirect(url_for("customer_dashboard"))
+            return render_template_string(CUSTOMER_ANON_TMPL,
+                page_title="Customer Portal", flash_msg="Invalid phone or password.", success_msg="")
+            return render_template_string(
+                CUSTOMER_ANON_TMPL,
+                page_title="Customer Portal",
+                flash_msg="Invalid phone or password.",
+                success_msg="",
+            )
+
+        @app.route("/customer/logout")
+        def customer_logout():
+            if "customer_idx" not in session:
+                return redirect(url_for("customer_page"))
+            idx  = session["customer_idx"]
+            idx = session["customer_idx"]
+            cust = self.customers[idx]
+            my_reqs = []
+            for r in self.requests:
+                if r.customer_index == idx:
+                    pname = r.chosen_part.name if r.chosen_part else "N/A"
+                    my_reqs.append({
+                        "id":            r.id,
+                        "issue":         r.issue,
+                        "chosen_part_name": pname,
+                        "total_amount":  r.total_amount,
+                        "paid":          r.paid,
+                        "payment_method": r.payment_method,
+                        "roadside":      r.roadside,
+                    })
+            flash  = session.pop("flash_msg",   "")
+            succ   = session.pop("success_msg", "")
+            return render_template_string(DASH_TMPL,
+                    my_reqs.append(
+                        {
+                            "id": r.id,
+                            "issue": r.issue,
+                            "chosen_part_name": pname,
+                            "total_amount": r.total_amount,
+                            "paid": r.paid,
+                            "payment_method": r.payment_method,
+                            "roadside": r.roadside,
+                        }
+                    )
+            flash = session.pop("flash_msg", "")
+            succ = session.pop("success_msg", "")
+            return render_template_string(
+                DASH_TMPL,
+                page_title="Dashboard",
+                cust_name=cust.get_name(),
+                cust_phone=cust.get_phone(),
+                requests=my_reqs,
+                flash_msg=flash,
+                success_msg=succ)
+                success_msg=succ,
+            )
+
+        @app.route("/customer/add-vehicle", methods=["GET", "POST"])
+        def add_vehicle():
+                return redirect(url_for("customer_page"))
+            if request.method == "POST":
+                idx  = session["customer_idx"]
+                idx = session["customer_idx"]
+                cust = self.customers[idx]
+                try:
+                    year = int(request.form.get("v_year", "0"))
+                    year = 0
+                cust.vehicle = Vehicle(
+                    reg_no = request.form.get("v_reg", "").strip(),
+                    brand  = request.form.get("v_brand", "").strip(),
+                    model  = request.form.get("v_model", "").strip(),
+                    colour = request.form.get("v_colour", "").strip(),
+                    year   = year,
+                    reg_no=request.form.get("v_reg", "").strip(),
+                    brand=request.form.get("v_brand", "").strip(),
+                    model=request.form.get("v_model", "").strip(),
+                    colour=request.form.get("v_colour", "").strip(),
+                    year=year,
+                )
+                cust.has_vehicle = True
+                session["success_msg"] = "Vehicle added successfully!"
+            if "customer_idx" not in session:
+                return redirect(url_for("customer_page"))
+            idx  = session["customer_idx"]
+            idx = session["customer_idx"]
+            cust = self.customers[idx]
+
+            if request.method == "GET":
+                if not cust.has_vehicle:
+                    session["flash_msg"] = "Please add a vehicle before requesting service."
+                    session["flash_msg"] = (
+                        "Please add a vehicle before requesting service."
+                    )
+                    return redirect(url_for("customer_dashboard"))
+                pairs    = self._data_mgr.get_parts_for_vehicle(cust.vehicle.model, cust.vehicle.brand)
+                pairs = self._data_mgr.get_parts_for_vehicle(
+                    cust.vehicle.model, cust.vehicle.brand
+                )
+                parts_list = [p for p, _ in pairs] if pairs else self.parts
+                mechs_info = []
+                for i, m in enumerate(self.mechanics):
+                    m.available = self._is_mechanic_available(i)
+                    mechs_info.append(m)
+                veh_str  = f"{cust.vehicle.brand} {cust.vehicle.model} ({cust.vehicle.reg_no})"
+                return render_template_string(SERVICE_TMPL,
+                veh_str = (
+                    f"{cust.vehicle.brand} {cust.vehicle.model} ({cust.vehicle.reg_no})"
+                )
+                return render_template_string(
+                    SERVICE_TMPL,
+                    page_title="Request Service",
+                    veh_str=veh_str,
+                    parts=parts_list,
+                    mechanics=mechs_info,
+                    locations=self._locations,
+                    flash_msg="")
+                    flash_msg="",
+                )
+
+            # POST
+            issue      = request.form.get("issue", "").strip()
+            part_code  = request.form.get("part_code", "").strip()
+            issue = request.form.get("issue", "").strip()
+            part_code = request.form.get("part_code", "").strip()
+            mech_idx_s = request.form.get("mech_idx", "")
+            roadside   = request.form.get("roadside", "0") == "1"
+            loc_idx_s  = request.form.get("loc_idx", "0")
+            payment    = request.form.get("payment", "bKash")
+            roadside = request.form.get("roadside", "0") == "1"
+            loc_idx_s = request.form.get("loc_idx", "0")
+            payment = request.form.get("payment", "bKash")
+
+            # Validate
+            if not issue or not part_code or not mech_idx_s:
+                pairs      = self._data_mgr.get_parts_for_vehicle(cust.vehicle.model, cust.vehicle.brand)
+                pairs = self._data_mgr.get_parts_for_vehicle(
+                    cust.vehicle.model, cust.vehicle.brand
+                )
+                parts_list = [p for p, _ in pairs] if pairs else self.parts
+                mechs_info = []
+                for i, m in enumerate(self.mechanics):
+                    m.available = self._is_mechanic_available(i)
+                    mechs_info.append(m)
+                return render_template_string(SERVICE_TMPL,
+                return render_template_string(
+                    SERVICE_TMPL,
+                    page_title="Request Service",
+                    veh_str=f"{cust.vehicle.brand} {cust.vehicle.model}",
+                    parts=parts_list,
+                    mechanics=mechs_info,
+                    locations=self._locations,
+                    flash_msg="Please fill in all required fields.")
+                    flash_msg="Please fill in all required fields.",
+                )
+
+            try:
+                mech_idx = int(mech_idx_s)
+
+            chosen_part = next((p for p in self.parts if p.code == part_code), Part())
+            mech        = self.mechanics[mech_idx] if 0 <= mech_idx < len(self.mechanics) else Mechanic()
+
+            req                  = ServiceRequest()
+            req.id               = self._next_req_id
+            self._next_req_id   += 1
+            req.customer_index   = idx
+            req.issue            = issue
+            req.chosen_part      = chosen_part
+            req.mechanic_index   = mech_idx
+            req.roadside         = roadside
+            req.payment_method   = payment
+            req.paid             = True
+            mech = (
+                self.mechanics[mech_idx]
+                if 0 <= mech_idx < len(self.mechanics)
+                else Mechanic()
+            )
+
+            req = ServiceRequest()
+            req.id = self._next_req_id
+            self._next_req_id += 1
+            req.customer_index = idx
+            req.issue = issue
+            req.chosen_part = chosen_part
+            req.mechanic_index = mech_idx
+            req.roadside = roadside
+            req.payment_method = payment
+            req.paid = True
+
+            if roadside:
+                req.delivery_charge = 100.0
+                req.delivery_charge = 0.0
+
+            req.total_amount = chosen_part.price + mech.rate_per_job + req.delivery_charge
+            req.total_amount = (
+                chosen_part.price + mech.rate_per_job + req.delivery_charge
+            )
+            self.requests.append(req)
+            if 0 <= mech_idx < len(self.mechanics):
+                self.mechanics[mech_idx].available = False
+            nearby_mechs: List[Dict] = []
+            if roadside and req.location.is_set():
+                ws   = Location(WORKSHOP_LAT, WORKSHOP_LON)
+                ws = Location(WORKSHOP_LAT, WORKSHOP_LON)
+                dist = req.location.distance_to(ws)
+                if dist > 100.0:
+                    result = self.network.auto_search_and_invite(
+                        nearby_mechs = result.get("invited_mechanics", [])
+
+            return render_template_string(CONFIRM_TMPL,
+            return render_template_string(
+                CONFIRM_TMPL,
+                page_title="Request Confirmed",
+                req_id=req.id,
+                issue=req.issue,
+                total=f"{req.total_amount:.2f}",
+                payment=payment,
+                nearby_mechs=nearby_mechs)
+                nearby_mechs=nearby_mechs,
+            )
+
+        # ── Admin ──
+        @app.route("/admin", methods=["GET"])
+            if session.get("admin_logged_in"):
+                return redirect(url_for("admin_dashboard"))
+            return render_template_string(ADMIN_LOGIN_TMPL, page_title="Admin", error="")
+            return render_template_string(
+                ADMIN_LOGIN_TMPL, page_title="Admin", error=""
+            )
+
+        @app.route("/admin/login", methods=["POST"])
+        def admin_login():
+            u  = request.form.get("username", "")
+            u = request.form.get("username", "")
+            pw = request.form.get("password", "")
+            if u == self.ADMIN_USER and simple_hash(pw) == self.ADMIN_HASH:
+                session["admin_logged_in"] = True
+                return redirect(url_for("admin_dashboard"))
+            return render_template_string(ADMIN_LOGIN_TMPL, page_title="Admin",
+                error="Invalid credentials.")
+            return render_template_string(
+                ADMIN_LOGIN_TMPL, page_title="Admin", error="Invalid credentials."
+            )
+
+        @app.route("/admin/logout")
+        def admin_logout():
+            reqs_data = []
+            for r in self.requests:
+                cname = self.customers[r.customer_index].get_name() if 0 <= r.customer_index < len(self.customers) else "Unknown"
+                cphone = self.customers[r.customer_index].get_phone() if 0 <= r.customer_index < len(self.customers) else ""
+                mname = self.mechanics[r.mechanic_index].name if 0 <= r.mechanic_index < len(self.mechanics) else "Unknown"
+                reqs_data.append({
+                    "id":        r.id,
+                    "cust_name": cname,
+                    "cust_phone": cphone,
+                    "issue":     r.issue,
+                    "part_name": r.chosen_part.name if r.chosen_part else "N/A",
+                    "mech_name": mname,
+                    "total":     r.total_amount,
+                    "paid":      r.paid,
+                    "payment":   r.payment_method or "Pending",
+                })
+                cname = (
+                    self.customers[r.customer_index].get_name()
+                    if 0 <= r.customer_index < len(self.customers)
+                    else "Unknown"
+                )
+                cphone = (
+                    self.customers[r.customer_index].get_phone()
+                    if 0 <= r.customer_index < len(self.customers)
+                    else ""
+                )
+                mname = (
+                    self.mechanics[r.mechanic_index].name
+                    if 0 <= r.mechanic_index < len(self.mechanics)
+                    else "Unknown"
+                )
+                reqs_data.append(
+                    {
+                        "id": r.id,
+                        "cust_name": cname,
+                        "cust_phone": cphone,
+                        "issue": r.issue,
+                        "part_name": r.chosen_part.name if r.chosen_part else "N/A",
+                        "mech_name": mname,
+                        "total": r.total_amount,
+                        "paid": r.paid,
+                        "payment": r.payment_method or "Pending",
+                    }
+                )
+            paid_reqs = [r for r in self.requests if r.paid]
+            revenue   = sum(r.total_amount for r in paid_reqs)
+            return render_template_string(ADMIN_DASH_TMPL,
+            revenue = sum(r.total_amount for r in paid_reqs)
+            return render_template_string(
+                ADMIN_DASH_TMPL,
+                page_title="Admin Dashboard",
+                total_customers=len(self.customers),
+                total_requests=len(self.requests),
+                total_revenue=f"{revenue:,.0f}",
+                requests=reqs_data,
+                invitations=self.network.invitations)
+                invitations=self.network.invitations,
+            )
+
+        @app.route("/admin/mark-paid", methods=["POST"])
+        def admin_mark_paid():
+            with open(filename, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "Request ID", "Customer Name", "Phone", "Vehicle Reg",
+                    "Issue", "Part Name", "Part Code", "Part Price",
+                    "Mechanic Name", "Mechanic Code", "Mechanic Rate",
+                    "Delivery", "Roadside", "GPS Location", "Total", "Paid", "Payment"
+                ])
+                writer.writerow(
+                    [
+                        "Request ID",
+                        "Customer Name",
+                        "Phone",
+                        "Vehicle Reg",
+                        "Issue",
+                        "Part Name",
+                        "Part Code",
+                        "Part Price",
+                        "Mechanic Name",
+                        "Mechanic Code",
+                        "Mechanic Rate",
+                        "Delivery",
+                        "Roadside",
+                        "GPS Location",
+                        "Total",
+                        "Paid",
+                        "Payment",
+                    ]
+                )
+                for r in self.requests:
+                    ci   = r.customer_index
+                    mi   = r.mechanic_index
+                    ci = r.customer_index
+                    mi = r.mechanic_index
+                    cust = self.customers[ci] if 0 <= ci < len(self.customers) else None
+                    mech = self.mechanics[mi] if 0 <= mi < len(self.mechanics) else None
+                    writer.writerow([
+                        r.id,
+                        cust.get_name() if cust else "Unknown",
+                        cust.get_phone() if cust else "",
+                        cust.vehicle.reg_no if cust and cust.has_vehicle else "",
+                        r.issue,
+                        r.chosen_part.name if r.chosen_part else "",
+                        r.chosen_part.code if r.chosen_part else "",
+                        r.chosen_part.price if r.chosen_part else 0,
+                        mech.name if mech else "Unknown",
+                        mech.code if mech else "",
+                        mech.rate_per_job if mech else 0,
+                        r.delivery_charge,
+                        "Yes" if r.roadside else "No",
+                        str(r.location) if r.roadside and r.location.is_set() else "",
+                        r.total_amount,
+                        "Yes" if r.paid else "No",
+                        r.payment_method or "Unpaid",
+                    ])
+                    writer.writerow(
+                        [
+                            r.id,
+                            cust.get_name() if cust else "Unknown",
+                            cust.get_phone() if cust else "",
+                            cust.vehicle.reg_no if cust and cust.has_vehicle else "",
+                            r.issue,
+                            r.chosen_part.name if r.chosen_part else "",
+                            r.chosen_part.code if r.chosen_part else "",
+                            r.chosen_part.price if r.chosen_part else 0,
+                            mech.name if mech else "Unknown",
+                            mech.code if mech else "",
+                            mech.rate_per_job if mech else 0,
+                            r.delivery_charge,
+                            "Yes" if r.roadside else "No",
+                            str(r.location)
+                            if r.roadside and r.location.is_set()
+                            else "",
+                            r.total_amount,
+                            "Yes" if r.paid else "No",
+                            r.payment_method or "Unpaid",
+                        ]
+                    )
+            print(f"  [Export] Bills written to {filename}")
+            open_file_cross_platform(filename)
+        except IOError as e:
+        print("\n" + "=" * 70)
+        print("   🚗  RoadRescue — Workshop Management & Breakdown Assistance System")
+        print(f"        {VERSION}  |  Group 8 (Tanvir-2485, Hafiz-2450, Shahajalal-2451)")
+        print(
+            f"        {VERSION}  |  Group 8 (Tanvir-2485, Hafiz-2450, Shahajalal-2451)"
+        )
+        print(f"        Department of CSE, Northern University Bangladesh")
+        print("=" * 70)
+        print(f"  AI Status : {self.ai.status_label}")
+        print(f"  Mechanics : {len(self.mechanics)} (workshop) + {len(self.network.mechanics)} (nationwide)")
+        print(
+            f"  Mechanics : {len(self.mechanics)} (workshop) + {len(self.network.mechanics)} (nationwide)"
+        )
+        print(f"  Parts     : {len(self.parts)} loaded")
+        print(f"  Locations : {len(self._locations)} loaded from locations.txt")
+        print()
+            print("  6) Exit")
+            ch = read_int("  Choose: ")
+            if   ch == 1: self._console_customer_portal()
+            elif ch == 2: self._console_admin_panel()
+            elif ch == 3: self._console_guest_demo()
+            elif ch == 4: self._generate_bills_csv()
+            elif ch == 5: self._start_web()
+            elif ch == 6: print("  Goodbye! 🚗"); break
+            if ch == 1:
+                self._console_customer_portal()
+            elif ch == 2:
+                self._console_admin_panel()
+            elif ch == 3:
+                self._console_guest_demo()
+            elif ch == 4:
+                self._generate_bills_csv()
+            elif ch == 5:
+                self._start_web()
+            elif ch == 6:
+                print("  Goodbye! 🚗")
+                break
+
+    def _start_web(self):
+        print("\n  ✅ Starting web interface at http://127.0.0.1:5000")
+
+    def _console_register(self):
+        name  = read_line("  Full Name: ")
+        name = read_line("  Full Name: ")
+        phone = read_line("  Phone: ")
+        for c in self.customers:
+            if c.phone == phone:
+                print("  ❌ Phone already registered!")
+                return
+        pw   = read_line("  Password: ")
+        pw = read_line("  Password: ")
+        cust = Customer(name, phone, pw)
+        cust.id = len(self.customers) + 1
+        self.customers.append(cust)
+    def _console_login(self) -> int:
+        phone = read_line("  Phone: ")
+        pw    = read_line("  Password: ")
+        pw = read_line("  Password: ")
+        for i, c in enumerate(self.customers):
+            if c.get_phone() == phone and c.check_password(pw):
+                return i
+            print("  4) My Requests   5) AI Diagnosis   6) Logout")
+            ch = read_int("  Choose: ")
+            if   ch == 1: cust.add_vehicle()
+            elif ch == 2: cust.show_vehicle()
+            elif ch == 3: self._console_create_request(idx)
+            elif ch == 4: self._console_view_requests(idx)
+            elif ch == 5: self._console_ai_diagnose()
+            elif ch == 6: break
+            if ch == 1:
+                cust.add_vehicle()
+            elif ch == 2:
+                cust.show_vehicle()
+            elif ch == 3:
+                self._console_create_request(idx)
+            elif ch == 4:
+                self._console_view_requests(idx)
+            elif ch == 5:
+                self._console_ai_diagnose()
+            elif ch == 6:
+                break
+
+    def _console_ai_diagnose(self):
+        problem = read_line("  Describe your problem: ")
+                    img_bytes = f.read()
+                mime = "image/jpeg"
+                if path.lower().endswith(".png"): mime = "image/png"
+                if path.lower().endswith(".png"):
+                    mime = "image/png"
+                result2 = self.ai.analyze_vehicle_image(img_bytes, mime)
+                print(f"\n  Source: {result2.get('source_label', 'Vision AI')}")
+                print("  " + "─" * 50)
+            return
+
+        req                = ServiceRequest()
+        req.id             = self._next_req_id
+        req = ServiceRequest()
+        req.id = self._next_req_id
+        self._next_req_id += 1
+        req.customer_index = cust_idx
+        req.issue          = read_line("  Describe the issue: ")
+        req.issue = read_line("  Describe the issue: ")
+
+        # AI suggestions
+        print("\n  🤖 Getting AI suggestions...")
+        res = self.ai.diagnose_problem(req.issue, f"{cust.vehicle.brand} {cust.vehicle.model}")
+        print(f"  {res.get('source_label','AI')}:")
+        res = self.ai.diagnose_problem(
+            req.issue, f"{cust.vehicle.brand} {cust.vehicle.model}"
+        )
+        print(f"  {res.get('source_label', 'AI')}:")
+        print("  " + res.get("response", "").replace("\n", "\n  "))
+
+        # Parts
+        pairs = self._data_mgr.get_parts_for_vehicle(cust.vehicle.model, cust.vehicle.brand)
+        pairs = self._data_mgr.get_parts_for_vehicle(
+            cust.vehicle.model, cust.vehicle.brand
+        )
+        if not pairs:
+            pairs = [(p, "fallback") for p in self.parts]
+        print(f"\n  Parts for {cust.vehicle.brand} {cust.vehicle.model}:")
+        pc = read_int("  Choose part: ")
+        if not (1 <= pc <= len(pairs)):
+            print("  Invalid choice."); return
+            print("  Invalid choice.")
+            return
+        req.chosen_part = pairs[pc - 1][0]
+
+        # Mechanic
+        for i, m in enumerate(self.mechanics):
+            m.available = self._is_mechanic_available(i)
+            print(f"  {i+1}) ", end=""); m.display()
+            print(f"  {i + 1}) ", end="")
+            m.display()
+        mc = read_int("  Choose mechanic: ")
+        if not (1 <= mc <= len(self.mechanics)) or not self.mechanics[mc - 1].available:
+            print("  Invalid or busy."); return
+            print("  Invalid or busy.")
+            return
+        req.mechanic_index = mc - 1
+        mech = self.mechanics[req.mechanic_index]
+
+        # Roadside
+        road = read_int("  Need roadside help? (1=Yes / 0=No): ")
+        req.roadside = (road == 1)
+        req.roadside = road == 1
+        if req.roadside:
+            if self._locations:
+                req.location = Location.input_from_list(self._locations)
+
+            if req.location.is_set():
+                ws   = Location(WORKSHOP_LAT, WORKSHOP_LON)
+                ws = Location(WORKSHOP_LAT, WORKSHOP_LON)
+                dist = req.location.distance_to(ws)
+                print(f"  Your location: {req.location}")
+                print(f"  Distance from workshop: {dist:.2f} km")
+                if dist > 100:
+                    print("\n  📍 You are far from the workshop. Searching nationwide...")
+                    print(
+                        "\n  📍 You are far from the workshop. Searching nationwide..."
+                    )
+                    result = self.network.auto_search_and_invite(
+                        req.location.lat, req.location.lon, req.issue, cust.get_name()
+                    )
+                        print(f"  ✅ {result['message']}")
+                        for m in result.get("invited_mechanics", []):
+                            print(f"     → {m['name']} ({m['expertise']}) — {m['distance_km']} km | 📞 {m['contact']}")
+                            print(
+                                f"     → {m['name']} ({m['expertise']}) — {m['distance_km']} km | 📞 {m['contact']}"
+                            )
+                    else:
+                        print(f"  ⚠️  {result['message']}")
+
+        req.delivery_charge = 100.0 if req.roadside else 0.0
+        req.total_amount    = req.chosen_part.price + mech.rate_per_job + req.delivery_charge
+        req.total_amount = (
+            req.chosen_part.price + mech.rate_per_job + req.delivery_charge
+        )
+
+        # Payment
+        self._console_take_payment(req)
+            read_line("  bKash Number: ")
+            read_line("  Transaction ID: ")
+            req.payment_method = "bKash"; req.paid = True
+            req.payment_method = "bKash"
+            req.paid = True
+            print("  ✅ bKash payment confirmed!")
+        elif opt == 2:
+            read_line("  Nagad Number: ")
+            read_line("  Transaction ID: ")
+            req.payment_method = "Nagad"; req.paid = True
+            req.payment_method = "Nagad"
+            req.paid = True
+            print("  ✅ Nagad payment confirmed!")
+        elif opt == 3:
+            read_line("  Card Number (16 digits): ")
+            read_line("  Name on Card: ")
+            read_line("  OTP: ")
+            req.payment_method = "Card"; req.paid = True
+            req.payment_method = "Card"
+            req.paid = True
+            print("  ✅ Card payment confirmed!")
+        else:
+            req.payment_method = "Pending"; req.paid = False
+            req.payment_method = "Pending"
+            req.paid = False
+            print("  ⏳ Payment deferred. Admin can collect later.")
+        return req.paid
+
+    def _console_admin_panel(self):
+        user = read_line("  Admin Username: ")
+        pw   = read_line("  Admin Password: ")
+        pw = read_line("  Admin Password: ")
+        if user != self.ADMIN_USER or simple_hash(pw) != self.ADMIN_HASH:
+            print("  ❌ Invalid admin credentials.")
+            return
+            print(f"\n  ─── Mechanic Invitations ({len(self.network.invitations)}) ───")
+            for inv in self.network.invitations:
+                print(f"  📨 {inv['name']} ({inv['city']}, {inv.get('distance_km','?')} km) ← {inv['customer_name']} | {inv['timestamp']}")
+                print(
+                    f"  📨 {inv['name']} ({inv['city']}, {inv.get('distance_km', '?')} km) ← {inv['customer_name']} | {inv['timestamp']}"
+                )
+
+        try:
+            rid = int(input("\n  Mark request as paid (ID, 0 to skip): ").strip())
+        mgr.run_console()
+    elif "--web" in sys.argv:
+        port  = 5000
+        port = 5000
+        debug = "--debug" in sys.argv
+        mgr.run_web(port=port, debug=debug)
+    else:
+        print("  └──────────────────────────────────────────┘")
+        ch = read_int("  Choose (1 or 2): ")
+        if ch == 1:
+            mgr.run_web(port=5000, debug=False)
+        else:
+            mgr.run_console()
+```Now let me verify the files were created and check for any issues:
